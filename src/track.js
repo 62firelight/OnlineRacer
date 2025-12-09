@@ -702,7 +702,7 @@ function loadTrack1() {
     car.node.collisionPlane.scale = [2, 1, 3];
 
     ground = new SceneNode();
-    ground.addMesh(["models/track01_new.fbx"]).then(() => {
+    ground.addMesh(["models/track_resort.fbx"]).then(() => {
         startLine = ground.getChild("startline");
         startLine.tag = "start";
 
