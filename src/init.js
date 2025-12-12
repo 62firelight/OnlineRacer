@@ -1,7 +1,15 @@
 function init() {
 
     loadMenu();
+    loadAudioSettings();
+}
 
+function loadAudioSettings() {
+    const volumeControl = document.querySelector("#volume");
+
+    if (volumeControl !== null) {
+        volumeControl.value = localStorage.getItem("volume");
+    }
 }
 
 function loadMenu() {
@@ -204,4 +212,8 @@ document.addEventListener("click", function () {
     audio.audioContext.resume().then(() => {
         // console.log("Playback resumed successfully");
     });
+});
+
+document.querySelector("#volume").addEventListener("change", (e) => {
+    localStorage.setItem("volume", e.target.value);
 });
