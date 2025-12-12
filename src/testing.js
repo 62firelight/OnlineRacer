@@ -13,6 +13,7 @@ function loadCollisionTest() {
     const object = new SceneNode();
     object.addMesh(["models/cube.obj"]);
     object.translation = [-2, 1, 2];
+    object.rotation = [0, Math.PI/4,0];
     const objectCollider = new CollisionPlane();
     objectCollider.translation = [0, 1.5, 0];
 
@@ -24,6 +25,7 @@ function loadCollisionTest() {
     c.translation = [0, 5, 0];
     c.scale = [1.5, 1.5, 1.5];
     player.addCollisionPlane(c);
+    player.name = "player";
 
     player.update = () => {
         Camera.main.translation = vec.add(player.translation, [0, 30, 0]);

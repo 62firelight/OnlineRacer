@@ -181,6 +181,7 @@ function loadTrack1() {
     const raceFinishedSfxEle = audio.loadAudio("sfx_race_finished");
 
     car.node.update = () => {
+        
         // Input handling
         if (!controlsDisabled) {
             // Acceleration
@@ -379,7 +380,7 @@ function loadTrack1() {
         //Camera movement calculations.
         let rotationDiff = carRotationY - cameraRotationY;
         let cameraRotationStep = rotationDiff * cameraLagFactor;
-        Camera.main.rotate(0, cameraRotationStep, 0);
+        Camera.main.rotateRelative(0, cameraRotationStep, 0);
         cameraDisp = vec.subtract(
             Camera.main.translation,
             car.node.translation
@@ -457,12 +458,26 @@ function loadTrack1() {
                     console.log(t);
                 }
                 if (t == "wall") {
-                    //A collision resulted. Add negative of delta pos to undo.
-                    let carInv = vec.scale(-1, carDelta);
-                    let camInv = vec.scale(-1, camDelta);
+                    
+                    // //A collision resulted. Add negative of delta pos to undo.
+                    // let carInv = vec.scale(-1, carDelta);
+                    // let camInv = vec.scale(-1, camDelta);
+                    // car.velocityXZ = 0;
+                    // car.node.translate(carInv[0], carYVelocity, carInv[2]);
+                    // Camera.main.translate(camInv[0], camInv[1], camInv[2]);
+
+                    //New collision code
+                    
+                    let MTV = collisions[i].MTV;
+                    
                     car.velocityXZ = 0;
-                    car.node.translate(carInv[0], carYVelocity, carInv[2]);
-                    Camera.main.translate(camInv[0], camInv[1], camInv[2]);
+                    car.node.translate(MTV[0], MTV[1], MTV[2]);
+                    Camera.main.translate(MTV[0], MTV[1], MTV[2]);
+
+                     
+                    
+                    
+                   
                 } else if (t == "ramp") {
                     //collision with ramp
                     carYVelocity += (1 / 25) * Math.abs(car.velocityXZ);
@@ -764,12 +779,15 @@ function loadTrack1() {
         );
 
         Camera.main.translation = vec.add(car.node.translation, CAMERA_REL_CAR);
-    });
 
+        sceneGraph.preCalcMatrices(ground);
+    });
+    
     ground.translate(0, -5, -50);
 
     sceneGraph.root.addChild(car.node);
-    sceneGraph.root.addChild(ground);
+    sceneGraph.root.addChild(ground); 
+    
 
     // Traffic light code
     const light = new UIPanel(10, 5, 5, 10, [
