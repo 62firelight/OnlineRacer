@@ -66,6 +66,7 @@ class Mesh {
 
         
         this.vertices = this.vertices.concat(mesh.vertices);
+        
         this.textureCoords = mesh.texturecoords[0];
 
         for (let j = 0; j < mesh.faces.length; j++) {
@@ -148,6 +149,10 @@ class Mesh {
             this.ext.bindVertexArrayOES(this.vao);
             gl.bindTexture(gl.TEXTURE_2D, this.texture);
             gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+
+            if(debug) {
+                
+            }
         }
 
     }
