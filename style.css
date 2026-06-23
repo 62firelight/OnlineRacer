@@ -82,11 +82,15 @@ canvas:not(#c) {
 }
 
 #volume-slider {
-    display: flex;
+    display: none;
     flex-flow: column;
     position: absolute;
-    bottom: 2vh;
-    left: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* display: flex; */
+    /* bottom: 2vh;
+    left: 20px; */
     color: white;
     font-family: "Jersey 15", sans-serif;
     font-size: 7vh;

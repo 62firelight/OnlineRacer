@@ -11,6 +11,7 @@ const input = {
     down2Binding: "ArrowDown",
     left2Binding: "ArrowLeft",
     right2Binding: "ArrowRight",
+    pauseMenuBinding :"Escape",
     up : false,
     upHeld : false,
     down : false,
@@ -94,7 +95,14 @@ const input = {
                     this.right2 = true;
                     this.right2Held = true;
                 }
-                
+                if (k === this.pauseMenuBinding) {
+                    if (!pauseMenu.visible) {
+                        pauseMenu.show();
+                    } else {
+                        pauseMenu.reset();
+                    }
+
+                }
             }
             
             if(e.type === "keyup") {
