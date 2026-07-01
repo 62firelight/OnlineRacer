@@ -9,6 +9,8 @@ const pauseMenu = {
 
     visible: false,
 
+    pauseMenuIndex: -1,
+
     show: function() {
         /*
             instead of redrawing
@@ -20,6 +22,7 @@ const pauseMenu = {
         if (!this.visible) {
             const pauseMenuBG = new UIPanel(lDim.x, lDim.y, lDim.w, lDim.h, ["textures/pause_menu/pause_menu.png"]);
             UILayer.push(pauseMenuBG);
+            this.pauseMenuIndex = UILayer.length - 1;
             const volumeSlider = document.getElementById('volume-slider');
             volumeSlider.style.display = "flex";
             this.visible = true;
@@ -27,7 +30,7 @@ const pauseMenu = {
     },
 
     reset: function() {
-        clearUIPanel();
+        UILayer = UILayer.filter((element, index) => index != this.pauseMenuIndex);
         const volumeSlider = document.getElementById('volume-slider');
         volumeSlider.style.display = "none";
         this.visible = false;
