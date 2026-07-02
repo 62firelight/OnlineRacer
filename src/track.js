@@ -43,6 +43,7 @@ function loadTrack(trackIndex) {
     Camera.ui.displayWidth = startHeight * aspectRatio;
     Camera.ui.translation = [0, 0, 15];
     Camera.ui.rotation = [0, 0, 0];
+    Camera.ui.updatePerspective();
 
     let cameraRotationY = 0;
     let cameraLagFactor = 0.1;
