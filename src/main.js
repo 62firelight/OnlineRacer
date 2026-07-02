@@ -165,7 +165,7 @@ function render() {
             if(e.transparent) {
                 transparentUI.push(e);
             } else {
-                e.render(Camera.main)
+                e.render(Camera.ui)
             }
         });
 
@@ -175,7 +175,7 @@ function render() {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         transparentUI.forEach((e) => {
-            e.render(Camera.main);
+            e.render(Camera.ui);
         });
 
         gl.disable(gl.BLEND);

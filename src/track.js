@@ -39,6 +39,11 @@ function loadTrack(trackIndex) {
     Camera.main.translation = [0, 0, 15];
     Camera.main.rotation = [0, 0, 0];
 
+    Camera.ui.displayHeight = startHeight;
+    Camera.ui.displayWidth = startHeight * aspectRatio;
+    Camera.ui.translation = [0, 0, 15];
+    Camera.ui.rotation = [0, 0, 0];
+
     let cameraRotationY = 0;
     let cameraLagFactor = 0.1;
 
@@ -1049,8 +1054,11 @@ function loadTrack(trackIndex) {
         minimapMeshNode.transparent = true;
         sceneGraph.root.addChild(minimapMeshNode);
         sceneGraph.preCalcMatrices();
-
         minimap.create(ground, minimapMeshNode);
+
+        // minimapUI = new UIPanel(0, 0, 20, 20, ["textures/maps/track1/track01_minimap.png"]);
+        // minimapUI.transparent = true;
+        // UILayer.push(minimapUI);
 
         staticCollidables.buildPartitions();
 

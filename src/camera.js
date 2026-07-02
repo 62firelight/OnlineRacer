@@ -9,8 +9,9 @@ class Camera {
 
     //track1 load position [0, 10, 15], [0, 0, 0]
 
-    static cameras = [new Camera([0, 0, 15], [0, 0, 0])]; // Can switch between different cameras by setting main to them.
+    static cameras = [new Camera([0, 0, 15], [0, 0, 0]), new Camera([0, 0, 15], [0, 0, 0])]; // Can switch between different cameras by setting main to them.
     static main = Camera.cameras[0];
+    static ui = Camera.cameras[1];
     static switchCamera(index) {
         Camera.main = Camera.cameras[index];
         //Need to adjust aspect ratio of displayWidth and displayHeight to match canvas aspect

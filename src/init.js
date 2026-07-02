@@ -78,6 +78,8 @@ function loadMenu() {
     const aspectRatio = canvas.width / canvas.height;
     Camera.main.displayHeight = 25;
     Camera.main.displayWidth = 25 * aspectRatio;
+    Camera.ui.displayHeight = 25;
+    Camera.ui.displayWidth = 25 * aspectRatio;
 
     const propXLoc = -37.5;
     const carYLoc = -10;
