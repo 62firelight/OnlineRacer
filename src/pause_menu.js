@@ -34,5 +34,6 @@ const pauseMenu = {
         const volumeSlider = document.getElementById('volume-slider');
         volumeSlider.style.display = "none";
         this.visible = false;
+        Camera.ui.updatePerspective();
     }
 }
