@@ -19,13 +19,26 @@
 */
 
 var audioContext = new AudioContext();
+const volumeControl = document.querySelector("#volume");
+
+function loadAudioSettings() {
+    const volumeControl = document.querySelector("#volume");
+
+    if (volumeControl !== null) {
+        volumeControl.value = localStorage.getItem("volume");
+    }
+}
 
 const audio = {
     init:function() {
         this.masterGainNode.connect(this.audioContext.destination);
-        const volumeControl = document.querySelector("#volume");
+        this.masterGainNode.gain.value = volumeControl.value;
         volumeControl.addEventListener("input", () => {
             this.masterGainNode.gain.value = volumeControl.value;
+        });
+        volumeControl.addEventListener("change", (e) => {
+            this.masterGainNode.gain.value = e.target.value;
+            localStorage.setItem("volume", e.target.value);
         });
 
     },
@@ -54,7 +67,6 @@ const audio = {
                     this.currentAudioSrc.loop = loop;
                     this.currentAudioSrc.playbackRate.value = this.playbackRate;
                     this.currentGainNode.gain.value = this.volume;
-
                     
                     //What to do when the audio has finished playing
                     const toDestroy = this.currentAudioSrc; // The reason for this is that this.currentAudioSource can change
@@ -147,4 +159,5 @@ const audio = {
     }
 };
 
+loadAudioSettings();
 audio.init();

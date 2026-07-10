@@ -60,16 +60,7 @@ function ignitionScreen() {
     }
 }
 
-function loadAudioSettings() {
-    const volumeControl = document.querySelector("#volume");
-
-    if (volumeControl !== null) {
-        volumeControl.value = localStorage.getItem("volume");
-    }
-}
-
 function loadMenu() {
-    loadAudioSettings();
     // Initialize camera with proper aspect ratio
 
     const menuMusicEle = audio.loadAudio("sounds/menu_music.mp3");
@@ -433,6 +424,6 @@ document.addEventListener("click", function () {
     });
 });
 
-document.querySelector("#volume").addEventListener("change", (e) => {
-    localStorage.setItem("volume", e.target.value);
-});
+// document.querySelector("#volume").addEventListener("change", (e) => {
+//     localStorage.setItem("volume", e.target.value);
+// });
