@@ -46,6 +46,7 @@ class UIPanel {
 
     // callback function 
     whenClicked;
+    whenFocused; // Only called when ui focused upon mouse selection. If the mouse clicks off the UI component, whenFocused is no longer called.
     mouseHovering = false;
     update;
     id = 1;
@@ -79,7 +80,7 @@ class UIPanel {
         /*
             vertices defined in the order of ll, rl, lu, ru,
         */
-        const z = -30.0;
+        const z = -1 * Camera.main.zNear - 0.1;
         this.z = z;
         
         this.vertices = [
@@ -196,17 +197,62 @@ class UIPanel {
         if(mx >= ll[0] && mx <= rl[0] && my <= lu[1] && my >= ll[1]) {
             this.mouseHovering = true;
             if(input.mouseClicked) {
+                if(this.textInput) {
+                    //If this is a input textbox
+                    
+                    this.textInputFocus = true;
+                }
                 //console.log("Button clicked!");
                 if(typeof this.whenClicked == "function") {
                     this.whenClicked();
                 }
-            }
+            } 
         } else {
+            if(input.mouseClicked) {
+                if(this.textInput) {
+                    this.textInputFocus = false;
+                }
+
+                this.whenLostFocus && typeof(this.whenLostFocus) === "function" && this.whenLostFocus();
+            }
             this.mouseHovering = false;
+        }
+
+        if(this.textInputFocus && this.textInput) {
+            //Check input events for keyboard key input
+
+            input.events.forEach((e) => {
+                const alphabetical = /^[A-Za-z]$/;
+                if(e.type == "keydown") {
+                    //If a valid input character
+                    if( alphabetical.test(e.key)) {
+                        //First check if the text fits
+                        const metrics = this.textCtx.measureText(this.textContent + e.key);
+                        
+                        const scaleFactor = Camera.main.displayWidth / this.textCtx.canvas.width;
+                        
+                        if(metrics.width * scaleFactor <= this.w ) {
+                            this.textContent += e.key;
+                        }
+                    } else if (e.key == "Backspace") {
+                        this.textContent = this.textContent.slice(0, this.textContent.length - 1);
+                    }
+                }
+            })
         }
     }
 
-    addText(content, size=0.95, font="jersey15, monospace", fillStyle="white") {
+    addTextInput(size=this.h, font="jersey15, monospace", fillStyle="white") {
+        this.addText("", size, font, fillStyle);
+        this.textInput = true;
+    }
+
+    removeTextInput() {
+        removeText();
+        this.textInput = false;
+    }
+
+    addText(content, size=this.h, font="jersey15, monospace", fillStyle="white") {
         /*
             Adds text as a texture (which in turn uses a canvas HTML element)
             The default font size is 54px as that fits with the green connect background texture
@@ -230,7 +276,10 @@ class UIPanel {
         this.textCtx.font = `${this.size * this.textCtx.canvas.width / 10}px ${this.font}`;
         this.jersey15font.load().then((font) => {
             document.fonts.add(font);
-            this.textCtx.font = `${this.size * this.textCtx.canvas.height / 10}px jersey15`;
+            //Calculate the pixel size of the font if the size is in world units
+            const scaleFactor = this.textCtx.canvas.height / Camera.main.displayHeight;
+            
+            this.textCtx.font = `${this.size * scaleFactor}px jersey15`;
         });
         this.textCtx.fillStyle = fillStyle;
         this.textCtx.fillText(this.textContent, -1000, -1000);
@@ -282,7 +331,10 @@ class UIPanel {
                 this.textCtx.canvas.height = gl.canvas.height;
                 this.textCtx.textAlign = "center";
                 this.textCtx.textBaseline = "middle";
-                this.textCtx.font = `${this.size * this.textCtx.canvas.height / 10}px ${this.font}`;
+                
+                //Size is in world units so calculate font pixel size
+                const scaleFactor = this.textCtx.canvas.height / Camera.main.displayHeight;
+                this.textCtx.font = `${this.size * scaleFactor}px ${this.font}`;
                 this.textCtx.shadowColor = "black";
                 this.textCtx.shadowBlur = 3;
                 this.textCtx.fillStyle = this.fillStyle;

@@ -2,30 +2,26 @@
 
 let probe;
 
-function loadScreenTest() {
+function textInputTest() {
     sceneGraph.reset();
-    const loadingScreen = new SceneGraph();
-    sceneGraph = loadingScreen;
-    const i = new SceneNode();
-    i.addMesh(["models/car/car.fbx"]);
-    i.update = () => {
-        i.rotate(0, 0, -0.1);
+    const input = new UIPanel(0, 5, 10, 2, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"])
+    input.whenClicked = () => {
+        input.textureIndex = 1;
     }
-    loadingScreen.root.addChild(i);
-    loadingScreen.afterLoaded(() => {
-        
-        const loadingGraph = new SceneGraph();
-
-        const o = new SceneNode();
-        loadingGraph.root.addChild(o);
-        o.addMesh(["models/maps/track1.fbx"]);
-        loadingGraph.afterLoaded(() => {
-            sceneGraph = loadingGraph;
-        });
-    })
-
-    Camera.main.translation = [0,0, 40];
-
+    input.whenLostFocus = () => {
+        input.textureIndex = 0;
+    }
+    const input1 = new UIPanel(0, 0, 10, 2, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"])
+    input1.whenClicked = () => {
+        input1.textureIndex = 1;
+    }
+    input1.whenLostFocus = () => {
+        input1.textureIndex = 0;
+    };
+    input.addTextInput(2);
+    input1.addTextInput(2);
+    UILayer.push(input);
+    UILayer.push(input1);
 }
 
 function cameraSwitchTest() {

@@ -779,6 +779,7 @@ function loadTrack(trackIndex) {
                     } else {
                         Client.state = "race_finished";
                         toggleHUD = false;
+                        minimap.destroy();
                         leaderboard.add(Client.id, finalTime);
                         playersFinished.push(Client.id);
                         nextRaceButton = new UIPanel(4, -6, 8, 2, ["textures/default.png"]);
