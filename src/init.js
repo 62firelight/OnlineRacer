@@ -33,10 +33,10 @@ function timeoutFunction() {
 
 function init() {
     ignitionScreen();
-
 }
 
 function ignitionScreen() {
+    // Initialize camera with proper aspect ratio
     const canvas = document.getElementById('c');
     const aspectRatio = canvas.width / canvas.height;
     Camera.main.displayHeight = 25;
@@ -70,6 +70,12 @@ function ignitionScreen() {
 
 function loadMenu() {
     // Initialize camera with proper aspect ratio
+    const canvas = document.getElementById('c');
+    const aspectRatio = canvas.width / canvas.height;
+    Camera.main.displayHeight = 25;
+    Camera.main.displayWidth = 25 * aspectRatio;
+    Camera.ui.displayHeight = 25;
+    Camera.ui.displayWidth = 25 * aspectRatio;
 
     const menuMusicEle = audio.loadAudio("sounds/menu_music.mp3");
     menuMusicEle.play(true);
