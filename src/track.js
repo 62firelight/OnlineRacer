@@ -24,6 +24,9 @@ function loadTrack(trackIndex) {
     staticCollidables.reset();
     toggleHUD = true;
 
+    // Hide volume slider during loading screen
+    document.querySelector("#volume-slider").style.display = "none";
+
     let car;
     let playerID;
     let networkCars = new Map();
@@ -1088,7 +1091,6 @@ function loadTrack(trackIndex) {
     const raceMusicEle = audio.loadAudio(
         raceMusicChoices[Math.floor(Math.random() * raceMusicChoices.length)]
     );
-    // raceMusicEle.load();
 
     const redLightSfxEle = audio.loadAudio("sounds/sfx_red_light.mp3");
     const orangeLightSfxEle = audio.loadAudio("sounds/sfx_orange_light.mp3");
@@ -1109,6 +1111,9 @@ function loadTrack(trackIndex) {
                         this.textureIndex++;
                         frameCounter = 0;
                         redLightSfxEle.play();
+
+                        // Allow pause menu to be opened
+                        isInGame = true;
                     }
                     break;
                 }

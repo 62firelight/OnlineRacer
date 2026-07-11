@@ -5,6 +5,7 @@ const connectionTimeoutTime = 5000;
 let connectionStartTime;
 let connectionEndTime;
 let timeoutFunctionId;
+let isInGame = false;
 function timeoutFunction() {
     connectionEndTime = performance.now() - connectionStartTime;
     if (debug) {
@@ -36,6 +37,13 @@ function init() {
 }
 
 function ignitionScreen() {
+    const canvas = document.getElementById('c');
+    const aspectRatio = canvas.width / canvas.height;
+    Camera.main.displayHeight = 25;
+    Camera.main.displayWidth = 25 * aspectRatio;
+    Camera.ui.displayHeight = 25;
+    Camera.ui.displayWidth = 25 * aspectRatio;
+
     //Need to call menu after click
     const ignitionBarrel = new UIPanel(0, 0, 10, 10, ["textures/menu/ignition_0.png", "textures/menu/ignition_1.png", "textures/menu/ignition_2.png"]);
     UILayer.push(ignitionBarrel);
@@ -65,13 +73,7 @@ function loadMenu() {
 
     const menuMusicEle = audio.loadAudio("sounds/menu_music.mp3");
     menuMusicEle.play(true);
-    const canvas = document.getElementById('c');
-    const aspectRatio = canvas.width / canvas.height;
-    Camera.main.displayHeight = 25;
-    Camera.main.displayWidth = 25 * aspectRatio;
-    Camera.ui.displayHeight = 25;
-    Camera.ui.displayWidth = 25 * aspectRatio;
-
+    
     const propXLoc = -37.5;
     const carYLoc = -10;
 
@@ -167,7 +169,6 @@ function mainMenuScreen() {
     ]);
     playOfflineBtn.addText("Play Offline", 0.95);
     playOfflineBtn.whenClicked = function () {
-        // TODO: Implement offline mode functionality
         loadTrack(0);
         Client.id = 1;
         allClientsLoaded = true;
@@ -423,7 +424,3 @@ document.addEventListener("click", function () {
         // console.log("Playback resumed successfully");
     });
 });
-
-// document.querySelector("#volume").addEventListener("change", (e) => {
-//     localStorage.setItem("volume", e.target.value);
-// });

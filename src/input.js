@@ -96,12 +96,13 @@ const input = {
                     this.right2Held = true;
                 }
                 if (k === this.pauseMenuBinding) {
-                    if (!pauseMenu.visible) {
-                        pauseMenu.show();
-                    } else {
-                        pauseMenu.reset();
+                    if (isInGame) {
+                        if (!pauseMenu.visible) {
+                            pauseMenu.show();
+                        } else {
+                            pauseMenu.reset();
+                        }
                     }
-
                 }
             }
             
