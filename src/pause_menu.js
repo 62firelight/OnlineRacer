@@ -64,7 +64,7 @@ const pauseMenu = {
     setVolumeCssSettingsForPauseMenu: function() {
         const volumeSlider = document.getElementById('volume-slider');
         volumeSlider.style.display = "flex";
-        volumeSlider.style.top = "40%";
+        volumeSlider.style.top = "37.5%";
         volumeSlider.style.bottom = "auto";
         volumeSlider.style.left = "50%";
         volumeSlider.style.transform = "translate(-50%, -50%)";
