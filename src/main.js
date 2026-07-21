@@ -20,6 +20,7 @@ const debugOptions = {
     displayNumberOfCollidables: false,
     displayKeyPresses: false,
     displayWebsocketOutgoing: false,
+    displayWebsocketIncoming: false,
     seeObjectNames: false, // WARNING: This setting is very performance-intensive
 }
 

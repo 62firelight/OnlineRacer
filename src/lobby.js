@@ -4,7 +4,17 @@ the screen once joined a lobby. */
 
 const LOBBIES_PER_PAGE = 10; // Only show 5 lobbies at a time
 
-function loadLobbies() {
+const idToUser = new Map(); // A map that maps client IDs to user data for each user.
+
+let lobbyID;
+
+function UserObject(username, id) {
+    //UserObject constructor function for user data
+    this.username = username;
+    this.id = id;
+}
+
+function lobbyMenu() {
 
     clearUIPanel(); // Removes UI but keeps background
 
@@ -34,7 +44,7 @@ function loadLobbies() {
             }
             uiComponent.whenClicked = () => {
                 selection = lobbyListings[i];
-                showJoinButton();
+                showJoinLobbyButton();
                 //console.log(`Selection: ${i}`);
             }
             UILayer.push(uiComponent);
@@ -45,7 +55,7 @@ function loadLobbies() {
 
     let joinButtonShown = false;
     let joinButton;
-    function showJoinButton() {
+    function showJoinLobbyButton() {
         if(!joinButtonShown) {
             joinButtonShown = true;
             joinButton = new UIPanel(5, -9, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"])
@@ -103,21 +113,103 @@ function loadLobbies() {
 
     function joinLobby(username) {
         clearUIPanel();
+        lobbyID = selection.lobbyID;
+        
         Client.send({
             type:"join_lobby",
-            lobbyID: selection.lobbyID,
+            lobbyID: lobbyID,
             username: username
         });
+        
         Client.onMessage = (e) => {
             const msg = JSON.parse(e.data);
 
-            if(msg.type == "lobby_join_successful") {
-                console.log("joined lobby!");
-            } else if(msg.type == "lobby_join_unsuccessful") {
-                console.log("failed to join!");
+            switch(msg.type) {
+                case "lobby_join_successful":
+                    Client.id = msg.clientID;
+                    Client.send({
+                        type:"get_game_state"
+                    });
+                    break;
+                case "lobby_users_changed":
+                    Client.send({
+                        type:"get_lobby_users",
+                        lobbyID:lobbyID
+                    });
+                    break;
+                case "lobby_join_unsuccessful":
+                    console.log("failed to join");
+                    break;
+                case "lobby_users":
+                    //Initiate users for each username
+                    idToUser.clear(); // In case of previous values
+                    for(const u of msg.users) {
+                        const user = new UserObject(u.username, u.id);
+                        idToUser.set(u.id, user);
+                    }
+                    listUsers();
+                    break;
+                case "game_state":
+                    //Decides whether the player can join as a spectator or racer.
+                    if(msg.state === "lobby_waiting") {
+                        showJoinGameButton().whenClicked = () => {
+                            Client.send({
+                                type: "begin_race",
+                                lobbyID:lobbyID,
+                                trackID:0
+                            });
+                        };
+                    } else if(msg.state === "racing") {
+                        showJoinGameButton(true);
+                    }
+                    break;
+                case "begin_race":
+                    loadTrack(msg.trackID);
+                    break;
             }
+
         }
 
+    }
+
+    function listUsers() {
+        
+        //Using the data in idToUser, draw a listing of each player username in the lobby
+        clearUIPanel();
+        
+        const users = Array.from(idToUser.values());
+        
+        //create background
+        const bgW = 15;
+        const bgH = 15;
+        const bg = new UIPanel(0, 0, bgW, bgH, ["textures/menu/lobby_players_panel.png"]);
+        bg.z -= 0.1; // Move it behind player listings
+        bg.recalculateVertices();
+        UILayer.push(bg);
+        const listingW = bgW;
+        const listingH = bgH / 4; 
+        for(let i = 0; i < users.length; i++) {
+            const listing = new UIPanel(0, bgH/2 - listingH/2 - i*listingH, listingW, listingH, ["textures/menu/connect_button_bg_0.png"]);
+            listing.transparent = true;
+            listing.addText(users[i].username);
+            UILayer.push(listing);
+            
+        }
+        
+    }
+
+    function showJoinGameButton(spectate=false) {
+        const joinButton = new UIPanel(5, -9, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"])
+        joinButton.addText(spectate?"Spectate":"Begin race");
+        UILayer.push(joinButton);
+        joinButton.update = () => {
+            if(joinButton.mouseHovering) {
+                joinButton.textureIndex = 1;
+            } else {
+                joinButton.textureIndex = 0;
+            }
+        }
+        return joinButton;
     }
 
     if(Client.connected) {

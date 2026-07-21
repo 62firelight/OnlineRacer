@@ -128,7 +128,9 @@ class Client {
 
         ws.onmessage = (e) => {
             const msg = JSON.parse(e.data);
-
+            if(debug && debugOptions.displayWebsocketIncoming) {
+                console.log("Incoming data:\n", e.data); 
+            }
             if(msg.type == "set_id") {
                 Client.id = msg.id;
             }

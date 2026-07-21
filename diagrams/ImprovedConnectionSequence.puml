@@ -37,18 +37,22 @@ note over Server
     - Inside the lobby object, maps websocket connection to client id.
 end note
 Server -> Client: signals ""lobby_join_successful"" with client id
+loop for each client in lobby
+    note over Server: signals "lobby_users_changed"
+end
+
 Client -> Server: signals ""get_lobby_users"" with lobby id
 Server -> Client: signals ""lobby_users"" with data containing usernames of each player
+note over Client: Updates lobby screen with user data
+
 Client -> Server: signals ""get_game_state"" with lobby id.
 Server -> Client: signals "game_state" with gameState
 
-alt gameState == "lobby_waiting"
+alt gameState == "lobby_waiting" && client is lobby leader
 note over Client: Create begin button
 else gameState == "racing"
 note over Client: Create spectate button
 end
-    
-note over Client: Updates lobby screen with user data
 
 alt begin button pressed && gameState == "lobby_waiting"
 Client -> Server: signals with {lobby id, ""begin_race"", track number}
