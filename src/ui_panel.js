@@ -20,6 +20,11 @@ function clearUIPanel() {
     UILayer = [];
 }
 
+function clearUI() {
+    //Simpler alias.
+    clearUIPanel();
+}
+
 class UIPanel {
 
     /*

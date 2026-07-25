@@ -58,6 +58,15 @@ export function clientWebSocketMessage(msg) {
             })
             break;
 
+        case "create_lobby": {
+            const lID = server.createLobby(msg.lobbyName);
+            sendBack({
+                type:"lobby_create_successful",
+                lobbyID:lID
+            });
+            break;
+        }
+
 
         case "join_lobby":{
             //Get lobby object

@@ -76,8 +76,4 @@ export const server = {
 
 };
 
-server.createLobby("test1");
-server.createLobby("test2");
-server.lobbies.get(server.createLobby("Bobs lobby"));
-server.lobbies.get(server.createLobby("Cool people"));
-server.createLobby("Fast racers");
+server.createLobby("testlobby");

@@ -20,6 +20,53 @@ function lobbyMenu() {
 
     let selection; // Indicates which lobby listing that has been selected.
 
+    function lobbyCreationPrompt() {
+        const text = new UIPanel(0, 6, 1, 3);
+        text.addText("Enter lobby name:");
+        const textBox = new UIPanel(0, 0, 20, 3, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"]);
+        const highlightOnMouseHover = function() {
+            if(this.mouseHovering || this.hasFocus) {
+                this.textureIndex = 1;
+            } else {
+                this.textureIndex = 0;
+            }
+        }
+        textBox.update = highlightOnMouseHover;
+        textBox.addTextInput();
+        const createButton = new UIPanel(5, -5, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"])
+        createButton.addText("Create");
+        createButton.update = highlightOnMouseHover;
+        createButton.whenClicked = () => {
+            Client.send({
+                type:"create_lobby",
+                lobbyName:textBox.textContent
+            }) 
+        }
+        UILayer.push(createButton);
+        UILayer.push(text);
+        UILayer.push(textBox);
+        Client.onMessage = (e) => {
+            const msg = JSON.parse(e.data);
+            if(msg.type === "lobby_create_successful") {
+                lobbyID = msg.lobbyID;
+                promptUsername();
+            } 
+            // else if(msg.type === "lobby_create_unsuccessful") {
+            //     retryLobbyCreation();
+            // }
+        }
+    }
+
+    //TODO: continue implementation once server side name checking
+    // function retryLobbyCreation(reason) {
+    //     const errorMessage = new UIPanel(0, 5, 1, 3);
+    //     errorMessage.addText(reason + " Please try again");
+    //     const okButton = new UIPanel(0, 0, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
+    //     okButton.addText("okay");
+    //     UILayer.push(okButton);
+    //     UILayer.push(errorMessage);
+    // }
+
     function displayListings(lobbyListings) {
         //Called when lobby listing information is recieved
         const bgX = 0;
@@ -113,7 +160,7 @@ function lobbyMenu() {
 
     function joinLobby(username) {
         clearUIPanel();
-        lobbyID = selection.lobbyID;
+        lobbyID ??= selection.lobbyID;
         
         Client.send({
             type:"join_lobby",
@@ -199,7 +246,7 @@ function lobbyMenu() {
     }
 
     function showJoinGameButton(spectate=false) {
-        const joinButton = new UIPanel(5, -9, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"])
+        const joinButton = new UIPanel(5, -9, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
         joinButton.addText(spectate?"Spectate":"Begin race");
         UILayer.push(joinButton);
         joinButton.update = () => {
@@ -212,20 +259,38 @@ function lobbyMenu() {
         return joinButton;
     }
 
+    function joinCreateLobby() {
+        const joinButton = gameUI.createButton(0, 2, "Join");
+        const createButton = gameUI.createButton(0, -2, "Create");
+        const header = gameUI.createHeader(0, 6, "Join or create lobby");
+
+        UILayer.push(joinButton);
+        UILayer.push(createButton);
+        UILayer.push(header);
+        joinButton.whenClicked = () => {
+            clearUI();
+            Client.send({
+                type:"get_lobby_listings"
+            })
+
+            Client.onMessage = (e) => {
+                const msg = JSON.parse(e.data);
+
+                switch(msg.type) {
+                    case "lobby_listings":
+                        displayListings(msg.lobbyListings);
+                        break;   
+                }
+            };
+        }
+        createButton.whenClicked = () => {
+            clearUI();
+            lobbyCreationPrompt();
+        }
+    }
+
     if(Client.connected) {
-        Client.send({
-            type:"get_lobby_listings"
-        })
-
-        Client.onMessage = (e) => {
-            const msg = JSON.parse(e.data);
-
-            switch(msg.type) {
-                case "lobby_listings":
-                    displayListings(msg.lobbyListings);
-                    break;   
-            }
-        };
+        joinCreateLobby();
     } else {
         console.error("Cannot load load lobbies because no connection to server!");
     }
