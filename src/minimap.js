@@ -18,8 +18,8 @@ const minimap = {
 
         const boundingBox = Camera.ui.getBoundingBox(minimapNode, project=false);
         
-        const desiredWidth = 6;
-        const desiredPosition = [10, -2];
+        const desiredWidth = 8;
+        const desiredPosition = [20, -8];
         //No need to choose height since we need to maintain aspect ratio
         const scaleFactor = desiredWidth / (boundingBox[1] - boundingBox[3]);
 
