@@ -20,6 +20,7 @@ const debugOptions = {
     displayNumberOfCollidables: false,
     displayKeyPresses: false,
     displayWebsocketOutgoing: false,
+    displayWebsocketIncoming: false,
     seeObjectNames: false, // WARNING: This setting is very performance-intensive
 }
 
@@ -169,8 +170,7 @@ function render() {
             }
         });
 
-        //Now render transparent
-        
+        //Now render transparent 
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 

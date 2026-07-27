@@ -20,6 +20,11 @@ function clearUIPanel() {
     UILayer = [];
 }
 
+function clearUI() {
+    //Simpler alias.
+    clearUIPanel();
+}
+
 class UIPanel {
 
     /*
@@ -41,7 +46,7 @@ class UIPanel {
     textureCoordsLocation;
     textureCoordsBuffer;
     textureCoords = [];
-    textures = [];
+    textures;
     textureIndex;
 
     // callback function 
@@ -50,6 +55,7 @@ class UIPanel {
     mouseHovering = false;
     update;
     id = 1;
+    static #focused = [];
 
     loaded;
 
@@ -65,7 +71,7 @@ class UIPanel {
 
     jersey15font = new FontFace("jersey15", "url('https://fonts.gstatic.com/s/jersey15/v4/_6_9EDzuROGsUuk2TWjiZYAg.woff2')");
 
-    constructor(x, y, w, h, textures) {
+    constructor(x, y, w, h, textures=null) {
 
         this.x = x;
         this.y = y;
@@ -97,16 +103,22 @@ class UIPanel {
             1, 1
         ];
 
-        this.textures = new Array(textures.length);
         this.textureIndex = 0;
+        
+        if(textures && textures.length > 0) {
 
-        for(let i = 0; i < textures.length; i++) {
-            loadTextureAsync(textures[i]).then((texture) => {
-                if(i == textures.length - 1) {
-                    this.loaded = true;
-                }
-                this.textures[i] = texture;
-            });
+            this.textures = new Array(textures.length);
+
+            for(let i = 0; i < textures.length; i++) {
+                loadTextureAsync(textures[i]).then((texture) => {
+                    if(i == textures.length - 1) {
+                        this.loaded = true;
+                    }
+                    this.textures[i] = texture;
+                });
+            }
+        } else {
+            this.loaded = true;
         }
 
         //Create a vao that will store rendering state.
@@ -197,11 +209,8 @@ class UIPanel {
         if(mx >= ll[0] && mx <= rl[0] && my <= lu[1] && my >= ll[1]) {
             this.mouseHovering = true;
             if(input.mouseClicked) {
-                if(this.textInput) {
-                    //If this is a input textbox
-                    
-                    this.textInputFocus = true;
-                }
+                this.hasFocus = true;
+                UIPanel.#focused.push(this);
                 //console.log("Button clicked!");
                 if(typeof this.whenClicked == "function") {
                     this.whenClicked();
@@ -209,16 +218,14 @@ class UIPanel {
             } 
         } else {
             if(input.mouseClicked) {
-                if(this.textInput) {
-                    this.textInputFocus = false;
-                }
-
+                this.hasFocus = false;
+                UIPanel.#focused = UIPanel.#focused.filter(ui => ui != this); // Remove from focused list
                 this.whenLostFocus && typeof(this.whenLostFocus) === "function" && this.whenLostFocus();
             }
             this.mouseHovering = false;
         }
 
-        if(this.textInputFocus && this.textInput) {
+        if(this.hasFocus && this.textInput) {
             //Check input events for keyboard key input
 
             input.events.forEach((e) => {
@@ -309,8 +316,12 @@ class UIPanel {
             let location = mat.transpose(mat.projection(cam.displayWidth, cam.displayHeight, cam.zNear, cam.zFar));
             gl.uniformMatrix4fv(this.projectionLocation, false, location);
             this.ext.bindVertexArrayOES(this.vao);
-            gl.bindTexture(gl.TEXTURE_2D, this.textures[this.textureIndex]);
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertices.length/3);
+
+            if(this.textures) {
+                gl.bindTexture(gl.TEXTURE_2D, this.textures[this.textureIndex]);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertices.length/3);
+            }
+
 
             if (this.textCtx !== undefined) {
                 // place the text at the correct position 
@@ -341,6 +352,10 @@ class UIPanel {
                 this.textCtx.fillText(this.textContent, pixelX, pixelY);
             }
         }
+    }
+
+    static getFocused() {
+        return this.#focused;
     }
 
 }
