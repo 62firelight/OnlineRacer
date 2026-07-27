@@ -165,7 +165,7 @@ function render() {
             if(e.transparent) {
                 transparentUI.push(e);
             } else {
-                e.render(Camera.ui)
+                e.render(Camera.ui);
             }
         });
 
