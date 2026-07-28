@@ -541,7 +541,7 @@ function SceneGraph() {
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
             this.transparentMeshes.forEach((nodeMesh) => {
-                nodeMesh.render(Camera.main);
+                nodeMesh.render(Camera.ui);
             });
 
             gl.disable(gl.BLEND);

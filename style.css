@@ -82,9 +82,13 @@ canvas:not(#c) {
 }
 
 #volume-slider {
-    display: flex;
+    /* display: none;
+    top: 42.5%;
+    left: 50%; 
+    transform: translate(-50%, -50%); */
     flex-flow: column;
     position: absolute;
+    display: flex;
     bottom: 2vh;
     left: 20px;
     color: white;

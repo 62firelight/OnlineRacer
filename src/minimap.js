@@ -14,19 +14,19 @@ const minimap = {
         }
 
         const mmWorld = [...minimapNode.world];
-        minimapNode.world = mat.chain([mat.inverse(Camera.main.createView()), mat.rotateX(Math.PI/2), minimapNode.world]);
+        minimapNode.world = mat.chain([mat.inverse(Camera.ui.createView()), mat.rotateX(Math.PI/2), minimapNode.world]);
 
-        const boundingBox = Camera.main.getBoundingBox(minimapNode, project=false);
+        const boundingBox = Camera.ui.getBoundingBox(minimapNode, project=false);
         
         const desiredWidth = 6;
-        const desiredPosition = [10, -2];
+        const desiredPosition = [15, -5];
         //No need to choose height since we need to maintain aspect ratio
         const scaleFactor = desiredWidth / (boundingBox[1] - boundingBox[3]);
 
         minimapNode.world = mat.chain([
-            mat.translate(desiredPosition[0], desiredPosition[1], -Camera.main.zNear - 0.2),
+            mat.translate(desiredPosition[0], desiredPosition[1], -Camera.ui.zNear - 0.11),
             mat.scale(scaleFactor, scaleFactor, 1),
-            Camera.main.createView(),
+            Camera.ui.createView(),
             minimapNode.world]);
 
         //Apply transformation
@@ -47,7 +47,8 @@ const minimap = {
         //UI panel coordinates are pretty much the same as the minimap x & y
         const center = mat.multiplyVec(minimapNode.world, [0, 0, 0, 1]);
 
-        this.playerIcon = new UIPanel(center[0], center[1], 0.5, 0.5, ["textures/default.png"]);
+        this.playerIcon = new UIPanel(center[0], center[1], 0.5, 0.5, ["textures/minimap_player.png"]);
+        this.playerIcon.transparent = true;
         UILayer.push(this.playerIcon);
 
         this.currentMeshNode = minimapNode;

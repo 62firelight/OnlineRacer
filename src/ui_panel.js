@@ -86,7 +86,7 @@ class UIPanel {
         /*
             vertices defined in the order of ll, rl, lu, ru,
         */
-        const z = -1 * Camera.main.zNear - 0.1;
+        const z = -1 * Camera.ui.zNear - 0.1;
         this.z = z;
         
         this.vertices = [
@@ -196,7 +196,7 @@ class UIPanel {
         */
         //TODO: get transformed points. Get mouse postion in terms of NDC space. Check collision using traditional box method.
 
-        const proj = mat.projection(Camera.main.displayWidth, Camera.main.displayHeight, Camera.main.zNear, Camera.main.zFar);
+        const proj = mat.projection(Camera.ui.displayWidth, Camera.ui.displayHeight, Camera.ui.zNear, Camera.ui.zFar);
         const v = this.vertices;
         const ll = vec4.perspectiveDivide(mat.multiplyVec(proj, [v[0], v[1], v[2], 1]));
         const rl = vec4.perspectiveDivide(mat.multiplyVec(proj, [v[3], v[4], v[5], 1]));
@@ -236,7 +236,7 @@ class UIPanel {
                         //First check if the text fits
                         const metrics = this.textCtx.measureText(this.textContent + e.key);
                         
-                        const scaleFactor = Camera.main.displayWidth / this.textCtx.canvas.width;
+                        const scaleFactor = Camera.ui.displayWidth / this.textCtx.canvas.width;
                         
                         if(metrics.width * scaleFactor <= this.w ) {
                             this.textContent += e.key;
@@ -284,7 +284,7 @@ class UIPanel {
         this.jersey15font.load().then((font) => {
             document.fonts.add(font);
             //Calculate the pixel size of the font if the size is in world units
-            const scaleFactor = this.textCtx.canvas.height / Camera.main.displayHeight;
+            const scaleFactor = this.textCtx.canvas.height / Camera.ui.displayHeight;
             
             this.textCtx.font = `${this.size * scaleFactor}px jersey15`;
         });
@@ -344,7 +344,7 @@ class UIPanel {
                 this.textCtx.textBaseline = "middle";
                 
                 //Size is in world units so calculate font pixel size
-                const scaleFactor = this.textCtx.canvas.height / Camera.main.displayHeight;
+                const scaleFactor = this.textCtx.canvas.height / Camera.ui.displayHeight;
                 this.textCtx.font = `${this.size * scaleFactor}px ${this.font}`;
                 this.textCtx.shadowColor = "black";
                 this.textCtx.shadowBlur = 3;

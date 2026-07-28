@@ -2,7 +2,7 @@
 ## The scene graph
 Pretty much every mesh that you see rendered is attached to a scene node which is on the scene graph heiarchy. (The exception is UI). The scene graph allows you to apply a transformation to a node and have the same transformation apply to all children nodes. (Think about local rotations in blender). Nodes can attach a mesh, and also have different properties affecting the functionality of the node.
 Here is an example:
-```
+```js
 const player = new SceneNode();
 //Fine grained collision means that the collision checking method is more continous over discrete.
 player.fineGrainedCollision = true;
@@ -17,12 +17,12 @@ sceneGraph.root.addChild(player);
 You can attach SceneNodes to SceneNodes using the addChild(node) method seen above.
 
 If you want to start over and clear everything (including UI) you use this commmand:
-```
+```js
 sceneGraph.reset();
 ```
 ### Movement
 If you want to move SceneNodes around:
-```
+```js
 player.translation = [1, 2, 3]; // x, y, z translation
 //Or
 player.rotation = [1, 2, 3]; // x, y, z axis rotations
@@ -39,7 +39,7 @@ player.scaleBy(2);
 ### Update loop
 If you want to add a scene node into the update loop:
 
-```
+```js
 player.update = () => {
     if(input.left) {
         //moves the player to the left of a left key press
@@ -49,24 +49,24 @@ player.update = () => {
 ```
 ### More advanced movements
 If you want to **rotate** in a scene nodes local coordinate system:
-```
+```js
 player.rotateLocal(1, 2, 3);
 ```
 
 If you want to **rotate around** an abritrary axis:
-```
+```js
 // Rotates 90 degrees around the [1, 0, 0] axis or the x axis
 player.rotateOnAxis([1, 0, 0], Math.PI/2);
 ```
 If you want to **linearly interpolate** a nodes position to another nodes position.
-```
+```js
 // Moves 50% of the way (0.5)
 player.moveTowards(otherPlayer.translation, 0.5);
 // Or if you want to specify the position manually
 player.moveTowards([1, 2, 3], 0.5);
 ```
 If you want to **linearly interpolate a nodes rotation** to another nodes rotation(SLERP):
-```
+```js
 // Rotates 50% of the way
 player.rotateTowards(otherPlayer.rotation, 0.5);
 // Or if you want to specify the rotation manually
@@ -74,19 +74,19 @@ player.rotateTowards([1, 2, 3], 0.5);
 ```
 ### Attaching meshes
 You can add a mesh to a scene node like this:
-```
+```js
 player.addMesh(["models/car.fbx"]);
 ```
 *Note: the reason why the array as an argument is because sometimes there are more than one file associated with a model such as when using object (.obj) files with material files (.mtl)*
 
 You can make a mesh transparent by giving it transparent textures and then marking it as transparent:
-```
+```js
 player.transparent = true;
 ```
 *Note: This is needed because the mesh gets rendered differently if it is transparent. The current implementation of transparency is also limited. If you are to place a transparent object behind another this is likely to not work well.*
 ## UI
 You can create a rectangular UI component and set its background image easily with:
-```
+```js
     const x = 0;
     const y = 0;
     const w = 5;
@@ -100,21 +100,21 @@ You can create a rectangular UI component and set its background image easily wi
 
 ### Transparency
 If you want to make the UI transparent you must specify this like so:
-```
+```js
 ui.transparent = true;
 ```
 *Note: the ui texture must contain transparent values for this to work*
 
 ### Text
 If you want to add text into your UI:
-```
+```js
 ui.addText("Here is some text", "Verdana", "black")
 ```
 
 ## Particle effects!
 The game implements a particle generator. You can set the texture of the particles and the different properties such as emit
 You can attach a particle generator to a scene node like this:
-```     
+```js     
     boosterEmitter = new ParticleGenerator("/textures/car/booster_2.png");
     boosterEmitter.maxParticles = 100; // The maximum amount of particles that can exist in one moment
     boosterEmitter.emitAmount = 3; // The amount of particles emitted in each iteration
@@ -125,7 +125,7 @@ You can attach a particle generator to a scene node like this:
 
 You can control the movement and size of the particles by setting certain functions of generator:
 
-```
+```js
 boosterEmitter.particleInit = (p) => {
     /*
     In here you can set properties for a particle when they are first created.
@@ -150,7 +150,7 @@ boosterEmitter.particleUpdate = (p) => {
 
 ## Audio
 You can add audio into the game by loading it in, then signalling to play or stop. For example:
-```
+```js
 const audioObject = audio.loadAudio("sounds/sound.mp3");
 audioObject.play();
 
@@ -162,7 +162,7 @@ There is a important behaviour of play() to note. Calling play() while there is 
 
 ### Looping audio
 Just call play like this:
-```
+```js
 audioObject.play(true);
 ```
 
@@ -196,7 +196,7 @@ For minimaps you must create a minimap mesh in blender. This mesh gets loaded in
 
 To load the minimap into the game, you must attach the minimap mesh to a sceneNode. Then you must call 'minimap.create()'. then during gameplay, to update the player position you must call 'minimap.updatePosistion()'. Here is a code excerpt:
 
-```
+```js
     const minimapNode = new SceneNode();
     minimapNode.addMesh(["meshfilename.fbx"]);
 
