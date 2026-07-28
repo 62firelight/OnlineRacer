@@ -18,13 +18,13 @@ const minimap = {
 
         const boundingBox = Camera.ui.getBoundingBox(minimapNode, project=false);
         
-        const desiredWidth = 8;
-        const desiredPosition = [20, -8];
+        const desiredWidth = 6;
+        const desiredPosition = [15, -5];
         //No need to choose height since we need to maintain aspect ratio
         const scaleFactor = desiredWidth / (boundingBox[1] - boundingBox[3]);
 
         minimapNode.world = mat.chain([
-            mat.translate(desiredPosition[0], desiredPosition[1], -Camera.ui.zNear - 5.1),
+            mat.translate(desiredPosition[0], desiredPosition[1], -Camera.ui.zNear - 0.11),
             mat.scale(scaleFactor, scaleFactor, 1),
             Camera.ui.createView(),
             minimapNode.world]);
