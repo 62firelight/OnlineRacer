@@ -47,7 +47,8 @@ const minimap = {
         //UI panel coordinates are pretty much the same as the minimap x & y
         const center = mat.multiplyVec(minimapNode.world, [0, 0, 0, 1]);
 
-        this.playerIcon = new UIPanel(center[0], center[1], 0.5, 0.5, ["textures/default.png"]);
+        this.playerIcon = new UIPanel(center[0], center[1], 0.5, 0.5, ["textures/minimap_player.png"]);
+        this.playerIcon.transparent = true;
         UILayer.push(this.playerIcon);
 
         this.currentMeshNode = minimapNode;
