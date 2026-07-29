@@ -32,6 +32,12 @@ const pauseMenu = {
             this.titleScreenBtn.whenClicked = function () {
                 // TODO: Implement quit button functionality
                 console.log("Quit button pressed");
+                toggleHUD=false;
+                sceneGraph.reset();
+                Camera.main.reset();
+                pauseMenu.reset();
+                isInGame = false;
+                loadMenu();
             };
             this.titleScreenBtn.update = function () {
                 if (this.mouseHovering) {

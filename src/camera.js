@@ -30,6 +30,11 @@ class Camera {
         this.projection = mat.projection(this.displayWidth, this.displayHeight, this.zNear, this.zFar);
     }
 
+    reset() {
+        this.translation = [0, 0, 15];
+        this.rotation = [0, 0, 0];
+    }
+
     translate(tx, ty, tz) {
         
         this.translation[0] += tx;
