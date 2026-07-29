@@ -4,14 +4,14 @@ let probe;
 
 function textInputTest() {
     sceneGraph.reset();
-    const input = new UIPanel(0, 5, 10, 2, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"])
+    const input = new UIPanel(0, 5, 10, 2, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"])
     input.whenClicked = () => {
         input.textureIndex = 1;
     }
     input.whenLostFocus = () => {
         input.textureIndex = 0;
     }
-    const input1 = new UIPanel(0, 0, 10, 2, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"])
+    const input1 = new UIPanel(0, 0, 10, 2, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"])
     input1.whenClicked = () => {
         input1.textureIndex = 1;
     }

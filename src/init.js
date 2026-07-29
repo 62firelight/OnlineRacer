@@ -149,8 +149,8 @@ function mainMenuScreen() {
 
     // Play Online button
     const playOnlineBtn = new UIPanel(uiStartXPos, 2, 19.5, 4.5, [
-        "textures/menu/connect_button_bg_0.png",
-        "textures/menu/connect_button_bg_1.png",
+        "textures/menu/main_menu_button_bg_0.png",
+        "textures/menu/main_menu_button_bg_1.png",
     ]);
     playOnlineBtn.addText("Play Online");
     playOnlineBtn.whenClicked = function () {
@@ -170,8 +170,8 @@ function mainMenuScreen() {
     UILayer.push(playOnlineBtn);
 
     const playOfflineBtn = new UIPanel(uiStartXPos, -5, 19.5, 4.5, [
-        "textures/menu/offline_button_bg_0.png",
-        "textures/menu/offline_button_bg_1.png",
+        "textures/menu/main_menu_button_bg_0.png",
+        "textures/menu/main_menu_button_bg_1.png",
     ]);
     playOfflineBtn.addText("Play Offline");
     playOfflineBtn.whenClicked = function () {
@@ -244,8 +244,8 @@ function retryConnectionScreen() {
     UILayer.push(serverErrorTxt);
 
     const retryBtn = new UIPanel(uiStartXPos, -5, 3 * 4, 3, [
-        "textures/menu/connect_button_bg_0.png",
-        "textures/menu/connect_button_bg_1.png",
+        "textures/menu/main_menu_button_bg_0.png",
+        "textures/menu/main_menu_button_bg_1.png",
     ]);
     retryBtn.addText("Retry");
     UILayer.push(retryBtn);
@@ -265,8 +265,8 @@ function retryConnectionScreen() {
     };
 
     const returnBtn = new UIPanel(uiStartXPos, -10, 16, 3, [
-        "textures/menu/connect_button_bg_0.png",
-        "textures/menu/connect_button_bg_1.png",
+        "textures/menu/main_menu_button_bg_0.png",
+        "textures/menu/main_menu_button_bg_1.png",
     ]);
     returnBtn.addText("Back to Menu");
     UILayer.push(returnBtn);

@@ -120,6 +120,7 @@ function initRaceNetworking() {
                 carModel.name = "carModel";
                 netCar.node.addChild(carModel);
                 
+                
                 netCar.node.update = () => {
 
                     //TODO: interpolation and extrapolation

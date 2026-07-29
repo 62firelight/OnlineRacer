@@ -23,7 +23,7 @@ function lobbyMenu() {
     function lobbyCreationPrompt() {
         const text = new UIPanel(0, 6, 1, 3);
         text.addText("Enter lobby name:");
-        const textBox = new UIPanel(0, 0, 20, 3, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"]);
+        const textBox = new UIPanel(0, 0, 20, 3, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"]);
         const highlightOnMouseHover = function() {
             if(this.mouseHovering || this.hasFocus) {
                 this.textureIndex = 1;
@@ -82,7 +82,7 @@ function lobbyMenu() {
 
         for(let i = 0; i < lobbyListings.length; i++) {
             const listing = lobbyListings[i];
-            const uiComponent = new UIPanel(bgX, bgY + bgHeight /2 - listingHeight/2 - i * listingHeight , listingWidth, listingHeight, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"]);
+            const uiComponent = new UIPanel(bgX, bgY + bgHeight /2 - listingHeight/2 - i * listingHeight , listingWidth, listingHeight, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"]);
             
             uiComponent.addText(`${listing.name}   ${listing.playersCount}/4`);
             uiComponent.transparent = true;
@@ -131,13 +131,13 @@ function lobbyMenu() {
         clearUIPanel();
         const text = new UIPanel(0, 6, 0, 3);
         text.addText("Enter your username");
-        const usernameInput = new UIPanel(0, 0, 15, 3, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"]);
+        const usernameInput = new UIPanel(0, 0, 15, 3, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"]);
         usernameInput.addTextInput();
         usernameInput.update = () => {
             if(usernameInput.mouseHovering || usernameInput.hasFocus) {
-                usernameInput.textureIndex = 0;
-            } else {
                 usernameInput.textureIndex = 1;
+            } else {
+                usernameInput.textureIndex = 0;
             }
         }
 
@@ -236,7 +236,7 @@ function lobbyMenu() {
         const listingW = bgW;
         const listingH = bgH / 4; 
         for(let i = 0; i < users.length; i++) {
-            const listing = new UIPanel(0, bgH/2 - listingH/2 - i*listingH, listingW, listingH, ["textures/menu/connect_button_bg_0.png"]);
+            const listing = new UIPanel(0, bgH/2 - listingH/2 - i*listingH, listingW, listingH, ["textures/menu/main_menu_button_bg_0.png"]);
             listing.transparent = true;
             listing.addText(users[i].username);
             UILayer.push(listing);
