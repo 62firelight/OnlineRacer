@@ -56,6 +56,8 @@ function updateViewport() {
         const aspectRatio = gl.canvas.width / gl.canvas.height;
         Camera.main.displayWidth = Camera.main.displayHeight * aspectRatio;
         Camera.main.updatePerspective();
+        Camera.ui.displayWidth = Camera.ui.displayHeight * aspectRatio;
+        Camera.ui.updatePerspective();        
     }
 }
 
