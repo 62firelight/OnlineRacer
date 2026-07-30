@@ -2,6 +2,24 @@
 
 let probe;
 
+function canvasTextureTest() {
+    sceneGraph.reset();
+    const canvas = document.createElement("canvas");
+    const c2d = canvas.getContext("2d");
+    canvas.width = 100;
+    canvas.height = 40;
+    c2d.textAlign = "center";
+    c2d.font="12px, jersey15, monospace";
+    c2d.fillStyle="white";
+    
+    c2d.fillText("Hello", 50, 20);
+    const texture = createTexture(canvas);
+    const ui = new UIPanel(0, 0, 10, 5);
+    ui.textures = [texture];
+    ui.transparent = true;
+    UILayer.push(ui);
+}
+
 function textInputTest() {
     sceneGraph.reset();
     const input = new UIPanel(0, 5, 10, 2, ["./textures/menu/connect_button_bg_0.png", "./textures/menu/connect_button_bg_1.png"])

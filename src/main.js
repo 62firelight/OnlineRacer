@@ -172,11 +172,11 @@ function render() {
             }
         });
 
-        //Now render transparent 
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //Now render transparent
 
         transparentUI.forEach((e) => {
+            gl.enable(gl.BLEND); // Must enable each time in case e.render disables
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             e.render(Camera.ui);
         });
 
