@@ -120,6 +120,14 @@ function initRaceNetworking() {
                 carModel.name = "carModel";
                 netCar.node.addChild(carModel);
                 
+                //Username banner
+                const usernameBanner = new UIPanel(0, 0, 1, 10);
+                usernameBanner.addText(idToUser.get(msg.id).username);
+                usernameBanner.fitToText();
+                const usernameBannerMaxWidth = usernameBanner.w;
+                const usernameBannerMaxHeight = usernameBanner.h;
+                UILayer.push(usernameBanner);
+
                 netCar.node.update = () => {
 
                     //TODO: interpolation and extrapolation
@@ -263,6 +271,27 @@ function initRaceNetworking() {
                     } else {
                         g2.enable = false;
                     }
+
+                    //Update username banner position
+                    const v = Camera.main.createView();
+                    const p = Camera.main.projection;
+
+                    const pointInCameraView = vec4.perspectiveDivide(mat.multiplyVec(mat.chain([p, v]), [...netCar.node.translation,1]));
+                    //Point is in ndc space so convert
+                    const yOffset = 30;
+                    usernameBanner.x = pointInCameraView[0] * Camera.ui.displayWidth / 2;
+                    const interpolation = (1 - (pointInCameraView[2] + 1)/2)
+                    usernameBanner.y = yOffset * interpolation + pointInCameraView[1] * Camera.ui.displayHeight / 2;
+                    
+                    usernameBanner.w = usernameBannerMaxWidth * interpolation; // Interpolate size based on distance from camera
+                    usernameBanner.h = usernameBannerMaxHeight * interpolation;
+                    if(pointInCameraView[2] > 1 || pointInCameraView[2] < -1) {
+                        usernameBanner.loaded = false;
+                        //Do not render if outside of camera frustrum
+                    } else {
+                        usernameBanner.loaded = true;
+                    }
+                    usernameBanner.recalculateVertices();
                 };
 
                 netCar.last3Packets = [];
