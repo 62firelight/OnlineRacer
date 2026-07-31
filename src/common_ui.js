@@ -16,6 +16,7 @@ const gameUI = {
     createHeader: function(x, y, text) {
         const header = new UIPanel(x, y, 1, 3);
         header.addText(text);
+        header.fitToText();
         return header;
     }
 }

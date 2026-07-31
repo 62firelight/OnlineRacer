@@ -21,7 +21,7 @@ function lobbyMenu() {
     let selection; // Indicates which lobby listing that has been selected.
 
     function lobbyCreationPrompt() {
-        const text = new UIPanel(0, 6, 1, 3);
+        const text = gameUI.createHeader(0, 6, "Enter lobby name");
         text.addText("Enter lobby name:");
         const textBox = new UIPanel(0, 0, 20, 3, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"]);
         const highlightOnMouseHover = function() {
@@ -129,7 +129,7 @@ function lobbyMenu() {
     
     function promptUsername() {
         clearUIPanel();
-        const text = new UIPanel(0, 6, 0, 3);
+        const text = gameUI.createHeader(0, 6, "Enter your username");
         text.addText("Enter your username");
         const usernameInput = new UIPanel(0, 0, 15, 3, ["./textures/menu/main_menu_button_bg_0.png", "./textures/menu/main_menu_button_bg_1.png"]);
         usernameInput.addTextInput();
@@ -246,8 +246,8 @@ function lobbyMenu() {
     }
 
     function showJoinGameButton(spectate=false) {
-        const joinButton = new UIPanel(5, -9, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
-        joinButton.addText(spectate?"Spectate":"Begin race");
+        const joinButton = new UIPanel(5, -10, 11, 3, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
+        joinButton.addText(spectate?"Spectate":"Begin race", 1.5);
         UILayer.push(joinButton);
         joinButton.update = () => {
             if(joinButton.mouseHovering) {

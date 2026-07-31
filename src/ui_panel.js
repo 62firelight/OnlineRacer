@@ -25,6 +25,19 @@ function clearUI() {
     clearUIPanel();
 }
 
+function fontReady() {
+    return new Promise((res, rej) => {
+        let jersey15font = new FontFace("jersey15", "url('https://fonts.gstatic.com/s/jersey15/v4/_6_9EDzuROGsUuk2TWjiZYAg.woff2')");
+        jersey15font.load().then((font) => {
+            document.fonts.add(font);
+            res();
+        }).catch(() => {
+            console.error("Could not load Jersey15 font!!");
+            rej();
+        });
+    })
+}
+
 class UIPanel {
 
     /*
@@ -69,7 +82,7 @@ class UIPanel {
     font;
     fillStyle;
 
-    jersey15font = new FontFace("jersey15", "url('https://fonts.gstatic.com/s/jersey15/v4/_6_9EDzuROGsUuk2TWjiZYAg.woff2')");
+    
 
     constructor(x, y, w, h, textures=null) {
 
@@ -236,13 +249,15 @@ class UIPanel {
                         //First check if the text fits
                         const metrics = this.textCtx.measureText(this.textContent + e.key);
                         
-                        const scaleFactor = Camera.ui.displayWidth / this.textCtx.canvas.width;
+                        const scaleFactor = Camera.ui.displayWidth / gl.canvas.width;
                         
                         if(metrics.width * scaleFactor <= this.w ) {
                             this.textContent += e.key;
+                            this.addText(this.textContent);
                         }
                     } else if (e.key == "Backspace") {
                         this.textContent = this.textContent.slice(0, this.textContent.length - 1);
+                        this.addText(this.textContent);
                     }
                 }
             })
@@ -265,42 +280,51 @@ class UIPanel {
             The default font size is 54px as that fits with the green connect background texture
         */
 
+        if(this.canvas) {
+            this.canvas.remove();
+        }
         // Create new canvas element
         this.canvas = document.createElement("canvas");
         this.textCtx = this.canvas.getContext("2d");
-        document.getElementById("gameContainer").appendChild(this.canvas);
 
-        this.size = size;
         this.font = font;
         this.fillStyle = fillStyle;
 
+        this.textCtx.shadowColor = "black";
+        this.textCtx.shadowBlur = 3;
+
         // Set text properties
         this.textContent = content;
-        this.textCtx.canvas.width = gl.canvas.width;
-        this.textCtx.canvas.height = gl.canvas.height;
+
+        this.textCtx.canvas.width = this.w * gl.canvas.width / Camera.ui.displayWidth; // Set to the width (in pixels) of the ui component
+        this.textCtx.canvas.height = this.h * gl.canvas.height / Camera.ui.displayHeight;
+
         this.textCtx.textAlign = "center";
         this.textCtx.textBaseline = "middle";
-        this.textCtx.font = `${this.size * this.textCtx.canvas.width / 10}px ${this.font}`;
-        this.jersey15font.load().then((font) => {
-            document.fonts.add(font);
-            //Calculate the pixel size of the font if the size is in world units
-            const scaleFactor = this.textCtx.canvas.height / Camera.ui.displayHeight;
-            
-            this.textCtx.font = `${this.size * scaleFactor}px jersey15`;
-        });
+     
+        this.size = size;
+        
         this.textCtx.fillStyle = fillStyle;
-        this.textCtx.fillText(this.textContent, -1000, -1000);
-        // Why (-1000, -1000)?
-        // =================== 
-        // So we don't see the text's starting position before it gets moved 
+        fontReady().then(() => {
+            //Create text texture
+            this.textCtx.font = `${this.size * gl.canvas.height/Camera.ui.displayHeight}px ${this.font}`;
+            this.textCtx.fillText(this.textContent, this.canvas.width/2, this.canvas.height/2);
+            if(this.textTex) {
+                gl.deleteTexture(this.textTex);
+            }
+            this.textTex = createTexture(this.canvas);    
+        });
+    }
 
-        // // Create texture for text
-        // this.textTex = gl.createTexture();
-        // gl.bindTexture(gl.TEXTURE_2D, this.textTex);
-        // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.textCtx.canvas);
-        // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    fitToText() {
+        if(this.canvas) {
+            //Measure text width
+            const metrics = this.textCtx.measureText(this.textContent);
+            const scaleFactor = Camera.ui.displayWidth / this.textCtx.canvas.width;
+            this.w = metrics.width * scaleFactor;
+            this.recalculateVertices();
+            this.addText(this.textContent);
+        }
     }
 
     removeText() {
@@ -308,6 +332,7 @@ class UIPanel {
             this.canvas.remove();
         }
         gl.deleteTexture(this.textTex);
+        this.textTex = undefined;
     }
 
     render(cam) {
@@ -323,33 +348,17 @@ class UIPanel {
             }
 
 
-            if (this.textCtx !== undefined) {
-                // place the text at the correct position 
-                // TODO: convert this to use recalculateVertices()
+            if (this.textTex) {
+                //If there is text to render
+                //Must disable depth buffer and enable blending
+                gl.enable(gl.BLEND);
+                gl.disable(gl.DEPTH_TEST);
+                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+                gl.bindTexture(gl.TEXTURE_2D, this.textTex);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertices.length/3);
+                gl.disable(gl.BLEND);
+                gl.enable(gl.DEPTH_TEST);
 
-                 // convert from clip space to pixels
-                this.textCtx.clearRect(0, 0, this.textCtx.canvas.width, this.textCtx.canvas.height);
-
-                location = mat.multiplyVec(mat.projection(cam.displayWidth, cam.displayHeight, cam.zNear, cam.zFar), [this.x, this.y, this.z, 1]);
-
-                location[0] /= location[3];
-                location[1] /= location[3];
-
-                const pixelX = (location[0] * 0.5 + 0.5) * gl.canvas.width;
-                const pixelY = (location[1] * -0.5 + 0.5) * gl.canvas.height;
-
-                this.textCtx.canvas.width = gl.canvas.width;
-                this.textCtx.canvas.height = gl.canvas.height;
-                this.textCtx.textAlign = "center";
-                this.textCtx.textBaseline = "middle";
-                
-                //Size is in world units so calculate font pixel size
-                const scaleFactor = this.textCtx.canvas.height / Camera.ui.displayHeight;
-                this.textCtx.font = `${this.size * scaleFactor}px ${this.font}`;
-                this.textCtx.shadowColor = "black";
-                this.textCtx.shadowBlur = 3;
-                this.textCtx.fillStyle = this.fillStyle;
-                this.textCtx.fillText(this.textContent, pixelX, pixelY);
             }
         }
     }
