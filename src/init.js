@@ -45,7 +45,7 @@ function ignitionScreen() {
     Camera.ui.displayWidth = 25 * aspectRatio;
 
     //Need to call menu after click
-    const ignitionPrompt = gameUI.createHeader(0, 8, "↓ Click the ignition barrel ↓")
+    const ignitionPrompt = gameUI.createHeader(0, 8, "↓ Click below to start ↓")
     UILayer.push(ignitionPrompt);
     const ignitionBarrel = new UIPanel(0, 0, 10, 10, ["textures/menu/ignition_0.png", "textures/menu/ignition_1.png", "textures/menu/ignition_2.png"]);
     UILayer.push(ignitionBarrel);
