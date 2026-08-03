@@ -32,7 +32,9 @@ function timeoutFunction() {
 };
 
 function init() {
-    ignitionScreen();
+        retryConnectionScreen();
+
+    // ignitionScreen();
 }
 
 function ignitionScreen() {
@@ -240,7 +242,7 @@ function retryConnectionScreen() {
     const serverErrorTxt = new UIPanel(uiStartXPos, 0, 30, 3, [
         "textures/menu/player_bg.png",
     ]);
-    serverErrorTxt.addText("Unable to connect to server.", 0.75);
+    serverErrorTxt.addText("Unable to connect to server.", serverErrorTxt.h * 0.85);
     UILayer.push(serverErrorTxt);
 
     const retryBtn = new UIPanel(uiStartXPos, -5, 3 * 4, 3, [
