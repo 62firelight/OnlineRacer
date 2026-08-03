@@ -247,7 +247,7 @@ function lobbyMenu() {
 
     function showJoinGameButton(spectate=false) {
         const joinButton = new UIPanel(5, -10, 11, 3, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
-        joinButton.addText(spectate?"Spectate":"Begin race", 1.5);
+        joinButton.addText(spectate?"Spectate":"Begin Race", 1.5);
         UILayer.push(joinButton);
         joinButton.update = () => {
             if(joinButton.mouseHovering) {

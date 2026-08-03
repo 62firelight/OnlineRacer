@@ -2,7 +2,7 @@
 
 const gameUI = {
     createButton: function(x, y, text) {
-        const button = new UIPanel(x, y, 8, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
+        const button = new UIPanel(x, y, 10, 2, ["./textures/menu/begin_button_bg_0.png", "./textures/menu/begin_button_bg_1.png"]);
         button.addText(text);
         button.update = () => {
             if(button.mouseHovering) {
@@ -14,7 +14,7 @@ const gameUI = {
         return button;
     }, 
     createHeader: function(x, y, text) {
-        const header = new UIPanel(x, y, 1, 3);
+        const header = new UIPanel(x, y, 1, 3, ["textures/menu/player_bg.png"]);
         header.addText(text);
         header.fitToText();
         return header;
